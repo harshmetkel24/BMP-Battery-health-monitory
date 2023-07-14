@@ -1,26 +1,44 @@
+var gauges = [];
+let adcTime = [{}];
+
 function getRandomADC(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 function updateGauge() {
   const adc = getRandomADC(0, 100);
+  const time = updateTimer();
+  adcTime.push({ time, adc });
   gauges.forEach(function (gauge) {
     gauge.write(adc);
   });
+
+  document.querySelector("table tbody").innerHTML = adcTime
+    .map((item, index) => {
+      return `<tr>
+      <td>${index}</td>
+      <td>${item.time}</td>
+      <td>${item.adc}</td>
+    </tr>`;
+    })
+    .join("");
 }
 
+updateGauge();
+
 function updateTimer() {
-    const date = new Date();
-    const time = date.toLocaleTimeString();
-    document.querySelector('.current-time').innerHTML = time;
+  const date = new Date();
+  const time = date.toLocaleTimeString();
+  document.querySelector(".current-time").innerHTML = time;
+  return time;
 }
 
 setInterval(function () {
   // Gets ADC value at every one second
   // GetADC();
   updateGauge();
-    updateTimer();
-}, 1000);
+  updateTimer();
+}, 3000);
 
 function GetADC() {
   var xhttp = new XMLHttpRequest();
@@ -38,7 +56,6 @@ function GetADC() {
   xhttp.send();
 }
 
-var gauges = [];
 var small = {
   size: 100,
   min: 0,

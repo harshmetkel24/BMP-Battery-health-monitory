@@ -1,5 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Chela+One&display=swap");
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .h1 {
   font-family: "Chela One", cursive;
 }
@@ -7,6 +13,10 @@
 .gauge-container {
 }
 
+tbody {
+  max-height: 100px;
+  overflow-y: scroll;
+}
 .progress {
   width: 150px;
   height: 150px;

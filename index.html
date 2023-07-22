@@ -44,10 +44,17 @@
         <div class="col col-lg-4 col-12">
           <div id="adc_chart"></div>
           <div id="current_voltage_chart"></div>
+          <div class="btn btn-success" onclick="generateReport()">
+            Download Report
+          </div>
+          <div class="btn btn-danger" onclick="reset()">Reset</div>
         </div>
       </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/pdfmake@latest/build/pdfmake.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdfmake@latest/build/vfs_fonts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html-to-pdfmake/browser.js"></script>
     <script src="\d3-gauge.js"></script>
     <script src="\jquery.min.js"></script>
     <script

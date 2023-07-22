@@ -1,6 +1,7 @@
 let gauges = [];
 let adcTime = [];
 let timeCurrentVoltage = [];
+let reportData = ``;
 
 function getRandomADC(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -31,7 +32,6 @@ function updateGauge() {
       getValueFromRotation(gauges[0]),
       getValueFromRotation(gauges[1]),
     ]);
-    console.log(gauges[0], gauges[1]);
   }
 
   document.querySelector("table tbody").innerHTML = adcTime
@@ -47,8 +47,6 @@ function updateGauge() {
     .join("");
 }
 
-updateGauge();
-
 function updateTimer() {
   const date = new Date();
   const time = date.getTime();
@@ -57,6 +55,93 @@ function updateTimer() {
   google.charts.setOnLoadCallback(drawBasic);
   return time;
 }
+
+function generateReport() {
+  let currentVoltageTableBody = ``;
+  timeCurrentVoltage.forEach((ele, index) => {
+    const date = new Date(ele[0]);
+    const time = date.toLocaleTimeString();
+    currentVoltageTableBody += `<tr>
+                    <td>${index + 1}</td>
+                    <td>${time}</td>
+                    <td>${ele[1]}</td>
+                    <td>${ele[2]}</td>
+                  </tr>`;
+  });
+
+  reportData += `
+  <h2>Current Voltage Table</h2>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Sr. No</th>
+                <th>Time</th>
+                <th>Current</th>
+                <th>Voltage</th>
+              </tr>
+            </thead>
+            ${currentVoltageTableBody}
+          </table>
+  `;
+
+  let adcTableBody = ``;
+
+  adcTime.forEach((ele, index) => {
+    const date = new Date(ele[0]);
+    const time = date.toLocaleTimeString();
+    adcTableBody += `<tr>
+                    <td>${index + 1}</td>
+                    <td>${time}</td>
+                    <td>${ele[1]}</td>
+                  </tr>`;
+  });
+
+  reportData += `
+    <h2>ADC Count Data</h2>
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Sr. No</th>
+            <th>Time</th>
+            <th>ADC Count</th>
+          </tr>
+        </thead>
+          ${adcTableBody}
+      </table>
+
+  `;
+
+  // console.log(reportData);
+
+  const html = `<body>${reportData}</body>`;
+  var val = htmlToPdfmake(html);
+  var dd = {
+    content: val,
+    pagebreakBefore: function (currentNode, followingNodesOnPage) {
+      return (
+        currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0
+      );
+    },
+    pageBackground: "#red",
+    styles: {
+      body: {
+        background: "#add8e6",
+        fontSize: 12,
+        lineHeight: 1.5,
+      },
+      page: {
+        background: "#f0f0f0",
+      },
+    },
+  };
+  pdfMake.createPdf(dd).download();
+}
+
+function reset() {
+  window.location.reload();
+}
+
+updateGauge();
 
 const intervalId = setInterval(function () {
   // Gets ADC value at every one second

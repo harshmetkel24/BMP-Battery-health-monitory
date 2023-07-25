@@ -19,8 +19,8 @@ function getValueFromRotation(gauge) {
 }
 
 function updateGauge() {
-  // const adc = GetADC();
-  const adc = getRandomADC(0, 100);
+  const adc = GetADC();
+  // const adc = getRandomADC(0, 100);
   const time = updateTimer();
   adcTime.push([time, adc]);
   gauges.forEach(function (gauge) {
@@ -52,8 +52,8 @@ function updateTimer() {
   const date = new Date();
   const time = date.getTime();
   document.querySelector(".current-time").innerHTML = date.toLocaleTimeString();
-  // google.charts.load("current", { packages: ["corechart", "line"] });
-  // google.charts.setOnLoadCallback(drawBasic);
+  google.charts.load("current", { packages: ["corechart", "line"] });
+  google.charts.setOnLoadCallback(drawBasic);
   return time;
 }
 
@@ -132,7 +132,6 @@ function reset() {
 }
 
 updateGauge();
-drawChart();
 
 // auto reset after every 5 minutes
 setInterval(() => {
@@ -144,8 +143,7 @@ const intervalId = setInterval(function () {
   // GetADC();
   updateGauge();
   updateTimer();
-  drawChart();
-}, 10000);
+}, 30000);
 
 // stop the updation after 3 minutes
 
@@ -195,56 +193,67 @@ function createGauge(opts) {
 createGauge({ clazz: "simple", label: "Battery Voltage" });
 createGauge({ clazz: "grayscale", label: "Battery Current" });
 
-function drawChart() {
-  const data = adcTime.map((ele) => {
-    const time = new Date(ele[0]).toLocaleTimeString();
-    return { x: time, y: ele[1] };
-  });
+function drawBasic() {
+  let dataAdcChart = new google.visualization.DataTable();
+  dataAdcChart.addColumn("number", "Time");
+  dataAdcChart.addColumn("number", "ADC Count");
 
-  const canvas = document.getElementById("adc-canvas");
-  const ctx = canvas.getContext("2d");
+  dataAdcChart.addRows(adcTime);
 
-  // Set canvas size based on the container
-  canvas.width = 500;
-  canvas.height = 300;
+  let adcChartOptions = {
+    chart: {
+      title: "ADC Count Data",
+      subtitle: "Measured values by Time",
+    },
+    legend: { position: "none" },
+    hAxis: {
+      title: "Time",
+    },
+    vAxis: {
+      title: "ADC Count",
+      DataView: {
+        min: 0,
+        max: 100,
+      },
+    },
+  };
 
-  // Calculate the maximum data value to scale the chart
-  const maxValue = Math.max(...data.map((point) => point.y));
+  let adcChart = new google.visualization.LineChart(
+    document.getElementById("adc_chart")
+  );
 
-  const stepX =
-    data.length <= 1 ? canvas.width / 2 : canvas.width / (data.length - 1);
-  const stepY = canvas.height / maxValue;
+  let dataCurentVoltage = new google.visualization.DataTable();
+  dataCurentVoltage.addColumn("number", "Time");
+  dataCurentVoltage.addColumn("number", "Current");
+  dataCurentVoltage.addColumn("number", "Voltage");
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.beginPath();
-  ctx.strokeStyle = "#007bff";
+  dataCurentVoltage.addRows(timeCurrentVoltage);
 
-  for (let i = 0; i < data.length; i++) {
-    const x = i * stepX;
-    const y = canvas.height - data[i].y * stepY;
+  let currentVoltageChart = new google.visualization.LineChart(
+    document.getElementById("current_voltage_chart")
+  );
 
-    // Draw the lines connecting data points
-    if (i === 0) {
-      ctx.moveTo(x, y);
-    } else {
-      ctx.lineTo(x, y);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-    }
+  let currentVoltageChartOptions = {
+    chart: {
+      title: "Current Voltage Data",
+      subtitle: "Measured values by Time",
+    },
+    legend: { position: "none" },
+    hAxis: {
+      title: "Time",
+    },
+    vAxis: {
+      title: "Current & Voltage",
+      viewWindow: {
+        min: 0,
+        max: 100,
+      },
+    },
+    series: {
+      1: { curveType: "function" },
+    },
+  };
 
-    // Draw the data points
-    ctx.beginPath();
-    ctx.arc(x, y, 4, 0, Math.PI * 2);
-    ctx.fillStyle = "#007bff";
-    ctx.fill();
-
-    // Draw the labels
-    ctx.fillStyle = "#000";
-    ctx.font = "12px Arial";
-    ctx.textAlign = "center";
-    ctx.fillText(`(${data[i].x}, ${data[i].y})`, x, y - 10);
-  }
-
-  ctx.stroke();
+  adcChart.draw(dataAdcChart, adcChartOptions);
+  currentVoltageChart.draw(dataCurentVoltage, currentVoltageChartOptions);
 }

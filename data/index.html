@@ -38,13 +38,11 @@
                 <th>ADC</th>
               </tr>
             </thead>
-            <tbody></tbody>
+            <tbody style="max-height: 800; overflow-y: scroll"></tbody>
           </table>
         </div>
         <div class="col col-lg-4 col-12">
-          <div id="adc_chart" class="line-chart">
-             <canvas id="adc-canvas"></canvas>
-          </div>
+          <div id="adc_chart"></div>
           <div id="current_voltage_chart"></div>
           <div class="btn btn-success" onclick="generateReport()">
             Download Report
@@ -70,10 +68,10 @@
       crossorigin="anonymous"
     ></script>
 
-    <!-- <script
+    <script
       type="text/javascript"
       src="https://www.gstatic.com/charts/loader.js"
-    ></script> -->
+    ></script>
     <script src="./index.js"></script>
 
     <script></script>

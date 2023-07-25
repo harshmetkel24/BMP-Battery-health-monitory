@@ -19,7 +19,8 @@ function getValueFromRotation(gauge) {
 }
 
 function updateGauge() {
-  const adc = getRandomADC(0, 100);
+  const adc = GetADC();
+  // const adc = getRandomADC(0, 100);
   const time = updateTimer();
   adcTime.push([time, adc]);
   gauges.forEach(function (gauge) {
@@ -122,17 +123,6 @@ function generateReport() {
         currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0
       );
     },
-    pageBackground: "#red",
-    styles: {
-      body: {
-        background: "#add8e6",
-        fontSize: 12,
-        lineHeight: 1.5,
-      },
-      page: {
-        background: "#f0f0f0",
-      },
-    },
   };
   pdfMake.createPdf(dd).download();
 }
@@ -143,18 +133,19 @@ function reset() {
 
 updateGauge();
 
+// auto reset after every 5 minutes
+setInterval(() => {
+  reset();
+}, 5 * 60 * 60 * 1000);
+
 const intervalId = setInterval(function () {
   // Gets ADC value at every one second
   // GetADC();
   updateGauge();
   updateTimer();
-}, 3000);
+}, 30000);
 
 // stop the updation after 3 minutes
-
-setTimeout(function () {
-  clearInterval(intervalId);
-}, 3 * 60 * 1000);
 
 function GetADC() {
   var xhttp = new XMLHttpRequest();
@@ -170,6 +161,7 @@ function GetADC() {
   };
   xhttp.open("GET", "/getADC", false);
   xhttp.send();
+  return adc;
 }
 
 var small = {

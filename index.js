@@ -137,7 +137,7 @@ drawChart();
 // auto reset after every 5 minutes
 setInterval(() => {
   reset();
-}, 5 * 60 * 60 * 1000);
+}, 5 * 60 * 1000);
 
 const intervalId = setInterval(function () {
   // Gets ADC value at every one second
@@ -145,7 +145,7 @@ const intervalId = setInterval(function () {
   updateGauge();
   updateTimer();
   drawChart();
-}, 10000);
+}, 30000);
 
 // stop the updation after 3 minutes
 
@@ -204,16 +204,12 @@ function drawChart() {
   const canvas = document.getElementById("adc-canvas");
   const ctx = canvas.getContext("2d");
 
-  // Set canvas size based on the container
-  canvas.width = 500;
-  canvas.height = 300;
-
   // Calculate the maximum data value to scale the chart
   const maxValue = Math.max(...data.map((point) => point.y));
 
   const stepX =
     data.length <= 1 ? canvas.width / 2 : canvas.width / (data.length - 1);
-  const stepY = canvas.height / maxValue;
+  const stepY = data.length === 1 ? 50 : canvas.height / (maxValue * 2);
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.beginPath();

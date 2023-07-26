@@ -215,6 +215,8 @@ function drawChart() {
   ctx.beginPath();
   ctx.strokeStyle = "#007bff";
 
+  console.log(ctx);
+
   for (let i = 0; i < data.length; i++) {
     const x = i * stepX;
     const y = canvas.height - data[i].y * stepY;
@@ -231,13 +233,13 @@ function drawChart() {
 
     // Draw the data points
     ctx.beginPath();
-    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.arc(x, y, 2, 0, Math.PI * 2);
     ctx.fillStyle = "#007bff";
     ctx.fill();
 
     // Draw the labels
     ctx.fillStyle = "#000";
-    ctx.font = "12px Arial";
+    ctx.font = "8px Arial";
     ctx.textAlign = "center";
     ctx.fillText(`(${data[i].x}, ${data[i].y})`, x, y - 10);
   }

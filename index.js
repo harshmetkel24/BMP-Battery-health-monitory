@@ -21,24 +21,18 @@ function getValueFromRotation(gauge) {
 function updateGauge() {
   // const adc = GetADC();
   const adc = getRandomADC(0, 100);
-  const time = updateTimer();
+  const time = new Date(updateTimer()).toLocaleTimeString();
+
+  google.charts.load("current", { packages: ["corechart", "line"] });
+  google.charts.setOnLoadCallback(drawGoogleChart);
   adcTime.push([time, adc]);
   gauges.forEach(function (gauge) {
     gauge.write(adc);
   });
 
-  if (gauges.length) {
-    timeCurrentVoltage.push([
-      time,
-      getValueFromRotation(gauges[0]),
-      getValueFromRotation(gauges[1]),
-    ]);
-  }
-
   document.querySelector("table tbody").innerHTML = adcTime
     .map((item, index) => {
-      const date = new Date(item[0]);
-      const timeInLocale = date.toLocaleTimeString();
+      const timeInLocale = item[0];
       return `<tr>
       <td>${index + 1}</td>
       <td>${timeInLocale}</td>
@@ -52,39 +46,10 @@ function updateTimer() {
   const date = new Date();
   const time = date.getTime();
   document.querySelector(".current-time").innerHTML = date.toLocaleTimeString();
-  // google.charts.load("current", { packages: ["corechart", "line"] });
-  // google.charts.setOnLoadCallback(drawBasic);
   return time;
 }
 
 function generateReport() {
-  let currentVoltageTableBody = ``;
-  timeCurrentVoltage.forEach((ele, index) => {
-    const date = new Date(ele[0]);
-    const time = date.toLocaleTimeString();
-    currentVoltageTableBody += `<tr>
-                    <td>${index + 1}</td>
-                    <td>${time}</td>
-                    <td>${ele[1]}</td>
-                    <td>${ele[2]}</td>
-                  </tr>`;
-  });
-
-  reportData += `
-  <h2>Current Voltage Table</h2>
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>Sr. No</th>
-                <th>Time</th>
-                <th>Current</th>
-                <th>Voltage</th>
-              </tr>
-            </thead>
-            ${currentVoltageTableBody}
-          </table>
-  `;
-
   let adcTableBody = ``;
 
   adcTime.forEach((ele, index) => {
@@ -132,7 +97,8 @@ function reset() {
 }
 
 updateGauge();
-drawChart();
+// drawGoogleChart();
+// drawChart();
 
 // auto reset after every 5 minutes
 setInterval(() => {
@@ -144,8 +110,8 @@ const intervalId = setInterval(function () {
   // GetADC();
   updateGauge();
   updateTimer();
-  drawChart();
-}, 30000);
+  // drawChart();
+}, 10000);
 
 // stop the updation after 3 minutes
 
@@ -156,7 +122,6 @@ function GetADC() {
     if (this.readyState == 4 && this.status == 200) {
       adc = Number(this.responseText);
       gauges.forEach(function (gauge) {
-        console.log(adc);
         gauge.write(adc);
       });
     }
@@ -168,8 +133,8 @@ function GetADC() {
 
 var small = {
   size: 100,
-  min: 0,
-  max: 50,
+  min: 11,
+  max: 14,
   transitionDuration: 500,
 
   label: "label.text",
@@ -193,7 +158,38 @@ function createGauge(opts) {
 }
 
 createGauge({ clazz: "simple", label: "Battery Voltage" });
-createGauge({ clazz: "grayscale", label: "Battery Current" });
+
+function drawGoogleChart() {
+  let dataAdcChart = new google.visualization.DataTable();
+  dataAdcChart.addColumn("string", "Time");
+  dataAdcChart.addColumn("number", "ADC Count");
+
+  dataAdcChart.addRows(adcTime);
+
+  let adcChartOptions = {
+    chart: {
+      title: "ADC Count Data",
+      subtitle: "Measured values by Time",
+    },
+    legend: { position: "none" },
+    hAxis: {
+      title: "Time",
+    },
+    vAxis: {
+      title: "ADC Count",
+      DataView: {
+        min: 0,
+        max: 100,
+      },
+    },
+  };
+
+  let adcChart = new google.visualization.LineChart(
+    document.getElementById("adc_chart")
+  );
+
+  adcChart.draw(dataAdcChart, adcChartOptions);
+}
 
 function drawChart() {
   const data = adcTime.map((ele) => {
@@ -215,7 +211,7 @@ function drawChart() {
   ctx.beginPath();
   ctx.strokeStyle = "#007bff";
 
-  console.log(ctx);
+  // console.log(ctx);
 
   for (let i = 0; i < data.length; i++) {
     const x = i * stepX;
@@ -246,3 +242,26 @@ function drawChart() {
 
   ctx.stroke();
 }
+
+// downloading a csv file
+
+function downloadCSV(adcTime, filename) {
+  const csvContent = adcTime.map((e) => e.join(",")).join("\n");
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+
+  const link = document.querySelector("download-btn");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+
+  // Add click event listener
+  link.addEventListener("click", () => {
+    // Clean up the Blob URL after download
+    URL.revokeObjectURL(link.href);
+  });
+
+  // Simulate a click on the link to trigger the download
+  link.click();
+}
+
+downloadCSV(adcTime, "adc_data.csv");

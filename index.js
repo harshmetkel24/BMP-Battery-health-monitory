@@ -105,6 +105,11 @@ setInterval(() => {
   reset();
 }, 5 * 60 * 1000);
 
+// timer should be updated every 1 second
+setInterval(() => {
+  updateTimer();
+}, 1000);
+
 const intervalId = setInterval(function () {
   // Gets ADC value at every one second
   // GetADC();
@@ -245,8 +250,16 @@ function drawChart() {
 
 // downloading a csv file
 
-function downloadCSV(adcTime, filename) {
-  const csvContent = adcTime.map((e) => e.join(",")).join("\n");
+function downloadCSV() {
+  const filename = "adc_data.csv";
+  const csvContent = adcTime
+    .map((item) => {
+      const row = item.join(",");
+      return row;
+    })
+    .join("\n");
+
+  console.log(csvContent);
 
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
 
@@ -260,5 +273,3 @@ function downloadCSV(adcTime, filename) {
     URL.revokeObjectURL(link.href);
   });
 }
-
-downloadCSV(adcTime, "adc_data.csv");

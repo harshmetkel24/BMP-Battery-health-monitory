@@ -259,9 +259,6 @@ function downloadCSV(adcTime, filename) {
     // Clean up the Blob URL after download
     URL.revokeObjectURL(link.href);
   });
-
-  // Simulate a click on the link to trigger the download
-  link.click();
 }
 
 downloadCSV(adcTime, "adc_data.csv");

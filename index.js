@@ -4,7 +4,7 @@ let timeCurrentVoltage = [];
 let reportData = ``;
 
 function getRandomADC(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
+  return (Math.random() * (max - min) + min).toFixed(2);
 }
 
 function getValueFromRotation(gauge) {
@@ -18,16 +18,30 @@ function getValueFromRotation(gauge) {
   return currentValue;
 }
 
+function getMappedValue(value) {
+  const inMin = 0.9;
+  const inMax = 1.2;
+  const outMin = 0;
+  const outMax = 100;
+
+  // ensure value is in range
+  value = Math.min(Math.max(value, inMin), inMax);
+
+  const mappedValue = ((value - inMin) * (outMax - outMin)) / (inMax - inMin);
+
+  return mappedValue;
+}
+
 function updateGauge() {
-  // const adc = GetADC();
-  const adc = getRandomADC(0, 100);
+  const adc = GetADC();
+  // const adc = getRandomADC(0.9, 1.2);
   const time = new Date(updateTimer()).toLocaleTimeString();
 
-  google.charts.load("current", { packages: ["corechart", "line"] });
-  google.charts.setOnLoadCallback(drawGoogleChart);
+  // google.charts.load("current", { packages: ["corechart", "line"] });
+  // google.charts.setOnLoadCallback(drawGoogleChart);
   adcTime.push([time, adc]);
   gauges.forEach(function (gauge) {
-    gauge.write(adc);
+    gauge.write(getMappedValue(adc));
   });
 
   document.querySelector("table tbody").innerHTML = adcTime
@@ -49,50 +63,8 @@ function updateTimer() {
   return time;
 }
 
-function generateReport() {
-  let adcTableBody = ``;
-
-  adcTime.forEach((ele, index) => {
-    const date = new Date(ele[0]);
-    const time = date.toLocaleTimeString();
-    adcTableBody += `<tr>
-                    <td>${index + 1}</td>
-                    <td>${time}</td>
-                    <td>${ele[1]}</td>
-                  </tr>`;
-  });
-
-  reportData += `
-    <h2>ADC Count Data</h2>
-    <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Sr. No</th>
-            <th>Time</th>
-            <th>ADC Count</th>
-          </tr>
-        </thead>
-          ${adcTableBody}
-      </table>
-
-  `;
-
-  // console.log(reportData);
-
-  const html = `<body>${reportData}</body>`;
-  var val = htmlToPdfmake(html);
-  var dd = {
-    content: val,
-    pagebreakBefore: function (currentNode, followingNodesOnPage) {
-      return (
-        currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0
-      );
-    },
-  };
-  pdfMake.createPdf(dd).download();
-}
-
 function reset() {
+  saveDataToLocalStorage();
   window.location.reload();
 }
 
@@ -111,8 +83,6 @@ setInterval(() => {
 }, 1000);
 
 const intervalId = setInterval(function () {
-  // Gets ADC value at every one second
-  // GetADC();
   updateGauge();
   updateTimer();
   // drawChart();
@@ -164,95 +134,13 @@ function createGauge(opts) {
 
 createGauge({ clazz: "simple", label: "Battery Voltage" });
 
-function drawGoogleChart() {
-  let dataAdcChart = new google.visualization.DataTable();
-  dataAdcChart.addColumn("string", "Time");
-  dataAdcChart.addColumn("number", "ADC Count");
-
-  dataAdcChart.addRows(adcTime);
-
-  let adcChartOptions = {
-    chart: {
-      title: "ADC Count Data",
-      subtitle: "Measured values by Time",
-    },
-    legend: { position: "none" },
-    hAxis: {
-      title: "Time",
-    },
-    vAxis: {
-      title: "ADC Count",
-      DataView: {
-        min: 0,
-        max: 100,
-      },
-    },
-  };
-
-  let adcChart = new google.visualization.LineChart(
-    document.getElementById("adc_chart")
-  );
-
-  adcChart.draw(dataAdcChart, adcChartOptions);
-}
-
-function drawChart() {
-  const data = adcTime.map((ele) => {
-    const time = new Date(ele[0]).toLocaleTimeString();
-    return { x: time, y: ele[1] };
-  });
-
-  const canvas = document.getElementById("adc-canvas");
-  const ctx = canvas.getContext("2d");
-
-  // Calculate the maximum data value to scale the chart
-  const maxValue = Math.max(...data.map((point) => point.y));
-
-  const stepX =
-    data.length <= 1 ? canvas.width / 2 : canvas.width / (data.length - 1);
-  const stepY = data.length === 1 ? 50 : canvas.height / (maxValue * 2);
-
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.beginPath();
-  ctx.strokeStyle = "#007bff";
-
-  // console.log(ctx);
-
-  for (let i = 0; i < data.length; i++) {
-    const x = i * stepX;
-    const y = canvas.height - data[i].y * stepY;
-
-    // Draw the lines connecting data points
-    if (i === 0) {
-      ctx.moveTo(x, y);
-    } else {
-      ctx.lineTo(x, y);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-    }
-
-    // Draw the data points
-    ctx.beginPath();
-    ctx.arc(x, y, 2, 0, Math.PI * 2);
-    ctx.fillStyle = "#007bff";
-    ctx.fill();
-
-    // Draw the labels
-    ctx.fillStyle = "#000";
-    ctx.font = "8px Arial";
-    ctx.textAlign = "center";
-    ctx.fillText(`(${data[i].x}, ${data[i].y})`, x, y - 10);
-  }
-
-  ctx.stroke();
-}
-
 // downloading a csv file
 
 function downloadCSV() {
-  const filename = "adc_data.csv";
-  const csvContent = adcTime
+  const filename = "ADC_Dataset.csv";
+
+  const storedData = JSON.parse(localStorage.getItem("adc_data")) || [];
+  const csvContent = storedData
     .map((item) => {
       const row = item.join(",");
       return row;
@@ -273,3 +161,142 @@ function downloadCSV() {
     URL.revokeObjectURL(link.href);
   });
 }
+
+function saveDataToLocalStorage() {
+  // get existing data from localstorage
+  let existingData = JSON.parse(localStorage.getItem("adc_data")) || [];
+  existingData = existingData.concat(adcTime);
+  // save the updated data to localstorage
+  console.log("existing data", existingData);
+  localStorage.setItem("adc_data", JSON.stringify(existingData));
+  adcTime = [];
+}
+
+// commented code may be required in future
+
+// function generateReport() {
+//   let adcTableBody = ``;
+
+//   adcTime.forEach((ele, index) => {
+//     const date = new Date(ele[0]);
+//     const time = date.toLocaleTimeString();
+//     adcTableBody += `<tr>
+//                     <td>${index + 1}</td>
+//                     <td>${time}</td>
+//                     <td>${ele[1]}</td>
+//                   </tr>`;
+//   });
+
+//   reportData += `
+//     <h2>Voltage Data</h2>
+//     <table class="table table-striped">
+//         <thead>
+//           <tr>
+//             <th>Sr. No</th>
+//             <th>Time</th>
+//             <th>Voltage</th>
+//           </tr>
+//         </thead>
+//           ${adcTableBody}
+//       </table>
+
+//   `;
+
+//   // console.log(reportData);
+
+//   const html = `<body>${reportData}</body>`;
+//   var val = htmlToPdfmake(html);
+//   var dd = {
+//     content: val,
+//     pagebreakBefore: function (currentNode, followingNodesOnPage) {
+//       return (
+//         currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0
+//       );
+//     },
+//   };
+//   pdfMake.createPdf(dd).download();
+// }
+
+// function drawGoogleChart() {
+//   let dataAdcChart = new google.visualization.DataTable();
+//   dataAdcChart.addColumn("string", "Time");
+//   dataAdcChart.addColumn("number", "Voltage");
+
+//   dataAdcChart.addRows(adcTime);
+
+//   let adcChartOptions = {
+//     chart: {
+//       title: "Voltage Data",
+//       subtitle: "Measured values by Time",
+//     },
+//     legend: { position: "none" },
+//     hAxis: {
+//       title: "Time",
+//     },
+//     vAxis: {
+//       title: "Voltage",
+//       DataView: {
+//         min: 0,
+//         max: 100,
+//       },
+//     },
+//   };
+
+//   let adcChart = new google.visualization.LineChart(
+//     document.getElementById("adc_chart")
+//   );
+
+//   adcChart.draw(dataAdcChart, adcChartOptions);
+// }
+
+// function drawChart() {
+//   const data = adcTime.map((ele) => {
+//     const time = new Date(ele[0]).toLocaleTimeString();
+//     return { x: time, y: ele[1] };
+//   });
+
+//   const canvas = document.getElementById("adc-canvas");
+//   const ctx = canvas.getContext("2d");
+
+//   // Calculate the maximum data value to scale the chart
+//   const maxValue = Math.max(...data.map((point) => point.y));
+
+//   const stepX =
+//     data.length <= 1 ? canvas.width / 2 : canvas.width / (data.length - 1);
+//   const stepY = data.length === 1 ? 50 : canvas.height / (maxValue * 2);
+
+//   ctx.clearRect(0, 0, canvas.width, canvas.height);
+//   ctx.beginPath();
+//   ctx.strokeStyle = "#007bff";
+
+//   // console.log(ctx);
+
+//   for (let i = 0; i < data.length; i++) {
+//     const x = i * stepX;
+//     const y = canvas.height - data[i].y * stepY;
+
+//     // Draw the lines connecting data points
+//     if (i === 0) {
+//       ctx.moveTo(x, y);
+//     } else {
+//       ctx.lineTo(x, y);
+//       ctx.stroke();
+//       ctx.beginPath();
+//       ctx.moveTo(x, y);
+//     }
+
+//     // Draw the data points
+//     ctx.beginPath();
+//     ctx.arc(x, y, 2, 0, Math.PI * 2);
+//     ctx.fillStyle = "#007bff";
+//     ctx.fill();
+
+//     // Draw the labels
+//     ctx.fillStyle = "#000";
+//     ctx.font = "8px Arial";
+//     ctx.textAlign = "center";
+//     ctx.fillText(`(${data[i].x}, ${data[i].y})`, x, y - 10);
+//   }
+
+//   ctx.stroke();
+// }

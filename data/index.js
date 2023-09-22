@@ -21,24 +21,18 @@ function getValueFromRotation(gauge) {
 function updateGauge() {
   const adc = GetADC();
   // const adc = getRandomADC(0, 100);
-  const time = updateTimer();
+  const time = new Date(updateTimer()).toLocaleTimeString();
+
+  google.charts.load("current", { packages: ["corechart", "line"] });
+  google.charts.setOnLoadCallback(drawGoogleChart);
   adcTime.push([time, adc]);
   gauges.forEach(function (gauge) {
     gauge.write(adc);
   });
 
-  if (gauges.length) {
-    timeCurrentVoltage.push([
-      time,
-      getValueFromRotation(gauges[0]),
-      getValueFromRotation(gauges[1]),
-    ]);
-  }
-
   document.querySelector("table tbody").innerHTML = adcTime
     .map((item, index) => {
-      const date = new Date(item[0]);
-      const timeInLocale = date.toLocaleTimeString();
+      const timeInLocale = item[0];
       return `<tr>
       <td>${index + 1}</td>
       <td>${timeInLocale}</td>
@@ -52,39 +46,10 @@ function updateTimer() {
   const date = new Date();
   const time = date.getTime();
   document.querySelector(".current-time").innerHTML = date.toLocaleTimeString();
-  google.charts.load("current", { packages: ["corechart", "line"] });
-  google.charts.setOnLoadCallback(drawBasic);
   return time;
 }
 
 function generateReport() {
-  let currentVoltageTableBody = ``;
-  timeCurrentVoltage.forEach((ele, index) => {
-    const date = new Date(ele[0]);
-    const time = date.toLocaleTimeString();
-    currentVoltageTableBody += `<tr>
-                    <td>${index + 1}</td>
-                    <td>${time}</td>
-                    <td>${ele[1]}</td>
-                    <td>${ele[2]}</td>
-                  </tr>`;
-  });
-
-  reportData += `
-  <h2>Current Voltage Table</h2>
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>Sr. No</th>
-                <th>Time</th>
-                <th>Current</th>
-                <th>Voltage</th>
-              </tr>
-            </thead>
-            ${currentVoltageTableBody}
-          </table>
-  `;
-
   let adcTableBody = ``;
 
   adcTime.forEach((ele, index) => {
@@ -98,13 +63,13 @@ function generateReport() {
   });
 
   reportData += `
-    <h2>ADC Count Data</h2>
+    <h2>Voltage Data</h2>
     <table class="table table-striped">
         <thead>
           <tr>
             <th>Sr. No</th>
             <th>Time</th>
-            <th>ADC Count</th>
+            <th>Voltage</th>
           </tr>
         </thead>
           ${adcTableBody}
@@ -132,18 +97,26 @@ function reset() {
 }
 
 updateGauge();
+// drawGoogleChart();
+// drawChart();
 
 // auto reset after every 5 minutes
 setInterval(() => {
   reset();
-}, 5 * 60 * 60 * 1000);
+}, 5 * 60 * 1000);
+
+// timer should be updated every 1 second
+setInterval(() => {
+  updateTimer();
+}, 1000);
 
 const intervalId = setInterval(function () {
   // Gets ADC value at every one second
   // GetADC();
   updateGauge();
   updateTimer();
-}, 30000);
+  // drawChart();
+}, 10000);
 
 // stop the updation after 3 minutes
 
@@ -154,7 +127,6 @@ function GetADC() {
     if (this.readyState == 4 && this.status == 200) {
       adc = Number(this.responseText);
       gauges.forEach(function (gauge) {
-        console.log(adc);
         gauge.write(adc);
       });
     }
@@ -166,8 +138,8 @@ function GetADC() {
 
 var small = {
   size: 100,
-  min: 0,
-  max: 50,
+  min: 11,
+  max: 14,
   transitionDuration: 500,
 
   label: "label.text",
@@ -191,18 +163,17 @@ function createGauge(opts) {
 }
 
 createGauge({ clazz: "simple", label: "Battery Voltage" });
-createGauge({ clazz: "grayscale", label: "Battery Current" });
 
-function drawBasic() {
+function drawGoogleChart() {
   let dataAdcChart = new google.visualization.DataTable();
-  dataAdcChart.addColumn("number", "Time");
-  dataAdcChart.addColumn("number", "ADC Count");
+  dataAdcChart.addColumn("string", "Time");
+  dataAdcChart.addColumn("number", "Voltage");
 
   dataAdcChart.addRows(adcTime);
 
   let adcChartOptions = {
     chart: {
-      title: "ADC Count Data",
+      title: "Voltage Data",
       subtitle: "Measured values by Time",
     },
     legend: { position: "none" },
@@ -210,7 +181,7 @@ function drawBasic() {
       title: "Time",
     },
     vAxis: {
-      title: "ADC Count",
+      title: "Voltage",
       DataView: {
         min: 0,
         max: 100,
@@ -222,38 +193,83 @@ function drawBasic() {
     document.getElementById("adc_chart")
   );
 
-  let dataCurentVoltage = new google.visualization.DataTable();
-  dataCurentVoltage.addColumn("number", "Time");
-  dataCurentVoltage.addColumn("number", "Current");
-  dataCurentVoltage.addColumn("number", "Voltage");
-
-  dataCurentVoltage.addRows(timeCurrentVoltage);
-
-  let currentVoltageChart = new google.visualization.LineChart(
-    document.getElementById("current_voltage_chart")
-  );
-
-  let currentVoltageChartOptions = {
-    chart: {
-      title: "Current Voltage Data",
-      subtitle: "Measured values by Time",
-    },
-    legend: { position: "none" },
-    hAxis: {
-      title: "Time",
-    },
-    vAxis: {
-      title: "Current & Voltage",
-      viewWindow: {
-        min: 0,
-        max: 100,
-      },
-    },
-    series: {
-      1: { curveType: "function" },
-    },
-  };
-
   adcChart.draw(dataAdcChart, adcChartOptions);
-  currentVoltageChart.draw(dataCurentVoltage, currentVoltageChartOptions);
+}
+
+function drawChart() {
+  const data = adcTime.map((ele) => {
+    const time = new Date(ele[0]).toLocaleTimeString();
+    return { x: time, y: ele[1] };
+  });
+
+  const canvas = document.getElementById("adc-canvas");
+  const ctx = canvas.getContext("2d");
+
+  // Calculate the maximum data value to scale the chart
+  const maxValue = Math.max(...data.map((point) => point.y));
+
+  const stepX =
+    data.length <= 1 ? canvas.width / 2 : canvas.width / (data.length - 1);
+  const stepY = data.length === 1 ? 50 : canvas.height / (maxValue * 2);
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.beginPath();
+  ctx.strokeStyle = "#007bff";
+
+  // console.log(ctx);
+
+  for (let i = 0; i < data.length; i++) {
+    const x = i * stepX;
+    const y = canvas.height - data[i].y * stepY;
+
+    // Draw the lines connecting data points
+    if (i === 0) {
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+    }
+
+    // Draw the data points
+    ctx.beginPath();
+    ctx.arc(x, y, 2, 0, Math.PI * 2);
+    ctx.fillStyle = "#007bff";
+    ctx.fill();
+
+    // Draw the labels
+    ctx.fillStyle = "#000";
+    ctx.font = "8px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText(`(${data[i].x}, ${data[i].y})`, x, y - 10);
+  }
+
+  ctx.stroke();
+}
+
+// downloading a csv file
+
+function downloadCSV() {
+  const filename = "adc_data.csv";
+  const csvContent = adcTime
+    .map((item) => {
+      const row = item.join(",");
+      return row;
+    })
+    .join("\n");
+
+  console.log(csvContent);
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+
+  const link = document.querySelector(".download-btn");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+
+  // Add click event listener
+  link.addEventListener("click", () => {
+    // Clean up the Blob URL after download
+    URL.revokeObjectURL(link.href);
+  });
 }

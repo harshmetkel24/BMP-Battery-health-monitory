@@ -1,5 +1,6 @@
 let gauges = [];
 let adcTime = [];
+let adcTimeToShow = [];
 let timeCurrentVoltage = [];
 let reportData = ``;
 
@@ -40,11 +41,12 @@ function updateGauge() {
   // google.charts.load("current", { packages: ["corechart", "line"] });
   // google.charts.setOnLoadCallback(drawGoogleChart);
   adcTime.push([time, adc]);
+  adcTimeToShow.push([time, adc]);
   gauges.forEach(function (gauge) {
     gauge.write(getMappedValue(adc));
   });
 
-  document.querySelector("table tbody").innerHTML = adcTime
+  document.querySelector("table tbody").innerHTML = adcTimeToShow
     .map((item, index) => {
       const timeInLocale = item[0];
       return `<tr>
@@ -74,8 +76,14 @@ updateGauge();
 
 // auto reset after every 5 minutes
 setInterval(() => {
+  saveDataToLocalStorage();
   reset();
 }, 5 * 60 * 1000);
+
+// also save data when user closes the tab or refreshes the page
+window.addEventListener("beforeunload", function (e) {
+  saveDataToLocalStorage();
+});
 
 // timer should be updated every 1 second
 setInterval(() => {
@@ -86,7 +94,7 @@ const intervalId = setInterval(function () {
   updateGauge();
   updateTimer();
   // drawChart();
-}, 10000);
+}, 5 * 60 * 1000);
 
 // stop the updation after 3 minutes
 

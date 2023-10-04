@@ -10,6 +10,10 @@
   font-family: "Chela One", cursive;
 }
 
+table tbody td, table thead tr {
+  text-align: center;
+}
+
 .line-chart {
   width: 100%;
   height: 300px;

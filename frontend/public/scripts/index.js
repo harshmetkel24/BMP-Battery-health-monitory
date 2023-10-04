@@ -1,5 +1,6 @@
 let gauges = [];
 let adcTime = [];
+let adcTimeToShow = [];
 let timeCurrentVoltage = [];
 let reportData = ``;
 
@@ -19,8 +20,8 @@ function getValueFromRotation(gauge) {
 }
 
 function getMappedValue(value) {
-  const inMin = 0.9;
-  const inMax = 1.2;
+  const inMin = 9;
+  const inMax = 13;
   const outMin = 0;
   const outMax = 100;
 
@@ -33,23 +34,32 @@ function getMappedValue(value) {
 }
 
 function updateGauge() {
-  const adc = GetADC();
-  // const adc = getRandomADC(0.9, 1.2);
+  // const adc = GetADC();
+  const adc = getRandomADC(9, 13);
+  const now = new Date();
+  const formattedDate = `${(now.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}/${now.getDate().toString().padStart(2, "0")}/${now
+    .getFullYear()
+    .toString()
+    .slice(2)}`;
   const time = new Date(updateTimer()).toLocaleTimeString();
 
   // google.charts.load("current", { packages: ["corechart", "line"] });
   // google.charts.setOnLoadCallback(drawGoogleChart);
-  adcTime.push([time, adc]);
+  adcTime.push([time, adc, formattedDate]);
+  adcTimeToShow.push([time, adc, formattedDate]);
   gauges.forEach(function (gauge) {
     gauge.write(getMappedValue(adc));
   });
 
-  document.querySelector("table tbody").innerHTML = adcTime
+  document.querySelector("table tbody").innerHTML = adcTimeToShow
     .map((item, index) => {
       const timeInLocale = item[0];
       return `<tr>
       <td>${index + 1}</td>
       <td>${timeInLocale}</td>
+      <td>${item[2]}</td>
       <td>${item[1]}</td>
     </tr>`;
     })
@@ -74,8 +84,14 @@ updateGauge();
 
 // auto reset after every 5 minutes
 setInterval(() => {
+  saveDataToLocalStorage();
   reset();
 }, 5 * 60 * 1000);
+
+// also save data when user closes the tab or refreshes the page
+window.addEventListener("beforeunload", function (e) {
+  saveDataToLocalStorage();
+});
 
 // timer should be updated every 1 second
 setInterval(() => {
@@ -86,7 +102,7 @@ const intervalId = setInterval(function () {
   updateGauge();
   updateTimer();
   // drawChart();
-}, 10000);
+}, 5 * 60 * 1000);
 
 // stop the updation after 3 minutes
 
@@ -105,24 +121,6 @@ function GetADC() {
   xhttp.send();
   return adc;
 }
-
-var small = {
-  size: 100,
-  min: 11,
-  max: 14,
-  transitionDuration: 500,
-
-  label: "label.text",
-  minorTicks: 4,
-  majorTicks: 5,
-  needleWidthRatio: 0.6,
-  needleContainerRadiusRatio: 0.7,
-
-  zones: [
-    { clazz: "yellow-zone", from: 0.73, to: 0.9 },
-    { clazz: "red-zone", from: 0.9, to: 1.0 },
-  ],
-};
 
 function createGauge(opts) {
   var el = document.querySelector(".gauge-container");

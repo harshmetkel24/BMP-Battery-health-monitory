@@ -334,17 +334,18 @@
           "use strict";
           t.exports = {
             size: 250,
-            min: 0,
-            max: 100,
+            min: 9,
+            max: 13,
             transitionDuration: 500,
             label: "label.text",
-            minorTicks: 4,
+            minorTicks: 50,
             majorTicks: 5,
             needleWidthRatio: 0.6,
             needleContainerRadiusRatio: 0.7,
             zones: [
-              { clazz: "yellow-zone", from: 0.73, to: 0.9 },
-              { clazz: "red-zone", from: 0.9, to: 1 },
+              { clazz: "yellow-zone", from: 0.3, to: 0.7 },
+              { clazz: "red-zone", from: 0, to: 0.3 },
+              { clazz: "green-zone", from: 0.7, to: 1 },
             ],
           };
         },
@@ -699,19 +700,17 @@
               if (e.createSVGPoint) {
                 var r = e.createSVGPoint();
                 if (ku < 0 && (nu.scrollX || nu.scrollY)) {
-                  e = Wo.select("body")
-                    .append("svg")
-                    .style(
-                      {
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        margin: 0,
-                        padding: 0,
-                        border: "none",
-                      },
-                      "important"
-                    );
+                  e = Wo.select("body").append("svg").style(
+                    {
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      margin: 0,
+                      padding: 0,
+                      border: "none",
+                    },
+                    "important"
+                  );
                   var i = e[0][0].getScreenCTM();
                   (ku = !(i.f || i.e)), e.remove();
                 }

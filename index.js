@@ -34,14 +34,21 @@ function getMappedValue(value) {
 }
 
 function updateGauge() {
-  const adc = GetADC();
-  // const adc = getRandomADC(0.9, 1.2);
+  // const adc = GetADC();
+  const adc = getRandomADC(0.9, 1.2);
+  const now = new Date();
+  const formattedDate = `${(now.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}/${now.getDate().toString().padStart(2, "0")}/${now
+    .getFullYear()
+    .toString()
+    .slice(2)}`;
   const time = new Date(updateTimer()).toLocaleTimeString();
 
   // google.charts.load("current", { packages: ["corechart", "line"] });
   // google.charts.setOnLoadCallback(drawGoogleChart);
-  adcTime.push([time, adc]);
-  adcTimeToShow.push([time, adc]);
+  adcTime.push([time, adc, formattedDate]);
+  adcTimeToShow.push([time, adc, formattedDate]);
   gauges.forEach(function (gauge) {
     gauge.write(getMappedValue(adc));
   });
@@ -52,6 +59,7 @@ function updateGauge() {
       return `<tr>
       <td>${index + 1}</td>
       <td>${timeInLocale}</td>
+      <td>${item[2]}</td>
       <td>${item[1]}</td>
     </tr>`;
     })
@@ -127,6 +135,7 @@ var small = {
   needleContainerRadiusRatio: 0.7,
 
   zones: [
+    { clazz: "green-zone", from: 0, to: 0.73 },
     { clazz: "yellow-zone", from: 0.73, to: 0.9 },
     { clazz: "red-zone", from: 0.9, to: 1.0 },
   ],

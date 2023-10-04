@@ -59,7 +59,7 @@
 }
 
 .d3-gauge.simple .green-zone {
-  fill: greenyellow;
+  fill: #32cd32;
 }
 
 .d3-gauge.simple .yellow-zone {

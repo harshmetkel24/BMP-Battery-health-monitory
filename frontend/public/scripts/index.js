@@ -20,8 +20,8 @@ function getValueFromRotation(gauge) {
 }
 
 function getMappedValue(value) {
-  const inMin = 9;
-  const inMax = 13;
+  const inMin = 0.9;
+  const inMax = 1.2;
   const outMin = 0;
   const outMax = 100;
 
@@ -50,7 +50,7 @@ function updateGauge() {
   adcTime.push([time, adc, formattedDate]);
   adcTimeToShow.push([time, adc, formattedDate]);
   gauges.forEach(function (gauge) {
-    gauge.write(getMappedValue(adc));
+    gauge.write(adc);
   });
 
   document.querySelector("table tbody").innerHTML = adcTimeToShow
@@ -74,7 +74,7 @@ function updateTimer() {
 }
 
 function reset() {
-  saveDataToLocalStorage();
+  saveDataToFile();
   window.location.reload();
 }
 
@@ -84,27 +84,22 @@ updateGauge();
 
 // auto reset after every 5 minutes
 setInterval(() => {
-  saveDataToLocalStorage();
-  reset();
-}, 5 * 60 * 1000);
+  saveDataToFile();
+  // reset();
+}, 30 * 1000);
 
 // also save data when user closes the tab or refreshes the page
 window.addEventListener("beforeunload", function (e) {
-  saveDataToLocalStorage();
+  saveDataToFile();
 });
 
 // timer should be updated every 1 second
-setInterval(() => {
-  updateTimer();
-}, 1000);
 
-const intervalId = setInterval(function () {
+setInterval(function () {
   updateGauge();
   updateTimer();
   // drawChart();
-}, 5 * 60 * 1000);
-
-// stop the updation after 3 minutes
+}, 1000);
 
 function GetADC() {
   var xhttp = new XMLHttpRequest();
@@ -160,14 +155,25 @@ function downloadCSV() {
   });
 }
 
-function saveDataToLocalStorage() {
-  // get existing data from localstorage
-  let existingData = JSON.parse(localStorage.getItem("adc_data")) || [];
-  existingData = existingData.concat(adcTime);
-  // save the updated data to localstorage
-  console.log("existing data", existingData);
-  localStorage.setItem("adc_data", JSON.stringify(existingData));
-  adcTime = [];
+function saveDataToFile() {
+  // make a post request to save data to file
+  fetch("http://localhost:3000/save", {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+    body: JSON.stringify(adcTime),
+  })
+    .then((response) => {
+      if (response.ok) {
+        console.log("Data saved successfully");
+      } else {
+        console.log("Data could not be saved, please refresh page");
+      }
+    })
+    .catch((err) => {
+      console.log("Data could not be saved, please refresh page");
+    });
 }
 
 // commented code may be required in future

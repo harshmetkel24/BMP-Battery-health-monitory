@@ -34,3 +34,7 @@ input:focus {
 button {
     border: 2px solid #fff !important;
 }
+
+i:hover{
+  cursor: pointer;
+}

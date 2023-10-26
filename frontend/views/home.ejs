@@ -4,383 +4,54 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Battery Health Monitor</title>
-    <link rel="stylesheet" href="./styles/home.css">
+    <link rel="stylesheet" href="./styles/home.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
   </head>
 
   <body>
     <div class="container-fluid min-vh-100">
       <%- include("./partials/navbar.ejs", {heading: "Battery Health Monitor | Add Betteries"}) %>
 
-      <form action="/" method="post" class="px-5 py-3 row">
-        <div class="container col-md-6 col-12">
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery1">Battery 1</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery1"
-              name="battery1"
-              placeholder="Enter url for Battery 1"
-            />
+      <div class="container w-50 bg-light border shadow-lg rounded-3 mt-5">
+        <form action="/" method="post" class="px-5 py-3">
+          <div class="form-group mb-3 input-group dynamic-input">
+            <!-- Initial input field -->
+            <div class="input-group mb-3 border border-2 border-dark rounded-3">
+              <span class="input-group-text text-primary" id="basic-addon1"
+                >Battery 1</span
+              >
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Enter Battery link"
+                name="battery1"
+              />
+              <span class="input-group-text text-secondary" id="basic-addon2">
+                <i class="fa-solid fa-trash remove-input"></i>
+              </span>
+            </div>
           </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery2">Battery 2</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery2"
-              name="battery2"
-              placeholder="Enter url for Battery 2"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery3">Battery 3</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery3"
-              name="battery3"
-              placeholder="Enter url for Battery 3"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery4">Battery 4</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery4"
-              name="battery4"
-              placeholder="Enter url for Battery 4"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery5">Battery 5</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery5"
-              name="battery5"
-              placeholder="Enter url for Battery 5"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery6">Battery 6</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery6"
-              name="battery6"
-              placeholder="Enter url for Battery 6"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery7">Battery 7</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery7"
-              name="battery7"
-              placeholder="Enter url for Battery 7"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery8">Battery 8</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery8"
-              name="battery8"
-              placeholder="Enter url for Battery 8"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery9">Battery 9</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery9"
-              name="battery9"
-              placeholder="Enter url for Battery 9"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery10">Battery 10</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery10"
-              name="battery10"
-              placeholder="Enter url for Battery 10"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery11">Battery 11</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery11"
-              name="battery11"
-              placeholder="Enter url for Battery 11"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery12">Battery 12</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery12"
-              name="battery12"
-              placeholder="Enter url for Battery 12"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery13">Battery 13</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery13"
-              name="battery13"
-              placeholder="Enter url for Battery 13"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery14">Battery 14</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery14"
-              name="battery14"
-              placeholder="Enter url for Battery 14"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery15">Battery 15</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery15"
-              name="battery15"
-              placeholder="Enter url for Battery 15"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery16">Battery 16</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery16"
-              name="battery16"
-              placeholder="Enter url for Battery 16"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery17">Battery 17</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery17"
-              name="battery17"
-              placeholder="Enter url for Battery 17"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery18">Battery 18</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery18"
-              name="battery18"
-              placeholder="Enter url for Battery 18"
-            />
-          </div>
-        </div>
 
-        <div class="container col-md-6 col-12">
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery19">Battery 19</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery19"
-              name="battery19"
-              placeholder="Enter url for Battery 19"
-            />
+          <div class="d-flex container justify-content-between p-0">
+            <button type="submit" class="btn btn-dark my-3 fw-bold">
+              Submit
+            </button>
+            <button
+              type="button"
+              class="btn btn-dark my-3 fw-bold"
+              id="add-battery"
+            >
+              Add Battery
+            </button>
           </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery20">Battery 20</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery20"
-              name="battery20"
-              placeholder="Enter url for Battery 20"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery21">Battery 21</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery21"
-              name="battery21"
-              placeholder="Enter url for Battery 21"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery22">Battery 22</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery22"
-              name="battery22"
-              placeholder="Enter url for Battery 22"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery23">Battery 23</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery23"
-              name="battery23"
-              placeholder="Enter url for Battery 23"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery24">Battery 24</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery24"
-              name="battery24"
-              placeholder="Enter url for Battery 24"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery25">Battery 25</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery25"
-              name="battery25"
-              placeholder="Enter url for Battery 25"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery26">Battery 26</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery26"
-              name="battery26"
-              placeholder="Enter url for Battery 26"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery27">Battery 27</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery27"
-              name="battery27"
-              placeholder="Enter url for Battery 27"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery28">Battery 28</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery28"
-              name="battery28"
-              placeholder="Enter url for Battery 28"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery29">Battery 29</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery29"
-              name="battery29"
-              placeholder="Enter url for Battery 29"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery30">Battery 30</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery30"
-              name="battery30"
-              placeholder="Enter url for Battery 30"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery31">Battery 31</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery31"
-              name="battery31"
-              placeholder="Enter url for Battery 31"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery32">Battery 32</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery32"
-              name="battery32"
-              placeholder="Enter url for Battery 32"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery33">Battery 33</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery33"
-              name="battery33"
-              placeholder="Enter url for Battery 33"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery34">Battery 34</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery34"
-              name="battery34"
-              placeholder="Enter url for Battery 34"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery35">Battery 35</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery35"
-              name="battery35"
-              placeholder="Enter url for Battery 35"
-            />
-          </div>
-          <div class="form-group mb-3">
-            <label class="fw-bold text-light" for="battery36">Battery 36</label
-            ><input
-              type="text"
-              class="form-control"
-              id="battery36"
-              name="battery36"
-              placeholder="Enter url for Battery 36"
-            />
-          </div>
-        </div>
-        
-
-        <button type="submit" class="btn btn-dark col-1 m-3 fw-bold">Submit</button>
-      </form>
+        </form>
+      </div>
     </div>
   </body>
 

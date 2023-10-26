@@ -9,7 +9,15 @@ const MonitorController = (req, res) => {
 let batteries = [];
 
 const GetBatteries = (req, res) => {
-  res.render("batteries", { batteries });
+  const validBatteries = [];
+  for(const battery in batteries)
+  {
+    if(batteries[battery]!= "")
+    {
+      validBatteries.push({url: batteries[battery], fileId: Number(battery.substring(7))})
+    }
+  }
+  res.render("batteries", { batteries: validBatteries });
 };
 
 const PostBatteries = (req, res) => {

@@ -4,23 +4,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-}
-
-.h1 {
   font-family: "Chela One", cursive;
+  letter-spacing: 2px;
 }
 
-table tbody td, table thead tr {
-  text-align: center;
-}
 
-.line-chart {
-  width: 100%;
-  height: 300px;
-  margin-bottom: 2em;
-}
-
-canvas {
-  height: 300px;
-  width: 100%;
-}

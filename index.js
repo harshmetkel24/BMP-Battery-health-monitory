@@ -65,14 +65,14 @@ setInterval(function () {
 // update gauge in every 30 sec
 setInterval(function () {
   updateGauge();
-}, 30 * 1000);
+}, 60 * 1000);
 // }, 5000);
 
 // auto reset after every 5 minutes
 setInterval(() => {
   saveDataToFile();
   reset();
-}, 5 * 60 * 1000);
+}, 10 * 60 * 1000);
 // }, 10000);
 
 // also save data when user closes the tab or refreshes the page

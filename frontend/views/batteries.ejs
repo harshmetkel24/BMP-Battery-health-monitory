@@ -24,10 +24,10 @@
           >
             <iframe src="<%= batteries[0].url %>"></iframe>
             <div
-              class="toggle-button btn btn-primary"
-              onclick="toggleFullScreen(this.parentElement)"
+              class="toggle-button btn btn-outline-dark"
+              onclick="toggleFullScreen(this.parentElement, this)"
             >
-              Toggle Fullscreen
+               <i class="fa-solid fa-expand"></i>
             </div>
           </div>
           <% } else { %> 
@@ -38,10 +38,10 @@
                 >
                   <iframe src="<%= batteries[`${i}`].url %>"></iframe>
                   <div
-                    class="toggle-button btn btn-primary"
-                    onclick="toggleFullScreen(this.parentElement)"
+                    class="toggle-button btn btn-outline-dark"
+                    onclick="toggleFullScreen(this.parentElement, this)"
                   >
-                    Toggle Fullscreen
+                     <i class="fa-solid fa-expand"></i>
                   </div>
                 </div>
               </div>
@@ -55,9 +55,9 @@
                       <iframe src="<%= batteries[`${i}`].url %>"></iframe>
                       <div
                         class="toggle-button btn btn-primary"
-                        onclick="toggleFullScreen(this.parentElement)"
+                        onclick="toggleFullScreen(this.parentElement, this)"
                       >
-                        Toggle Fullscreen
+                        <i class="fa-solid fa-expand"></i>
                       </div>
                   </div>
                 </div>
@@ -75,11 +75,14 @@
 
         console.log(batteries)
       // Function to toggle full-screen mode
-      function toggleFullScreen(element) {
+      function toggleFullScreen(element, btn) {
+        console.log(btn.innerHTML )
         if (element.classList.contains("full-screen")) {
+          btn.innerHTML  = `<i class="fa-solid fa-expand"></i>`;
           element.children[1].style.zIndex--;
           element.classList.remove("full-screen");
         } else {
+          btn.innerHTML = `<i class="fa-solid fa-compress"></i>`;
           element.children[1].style.zIndex++;
           element.classList.add("full-screen");
         }

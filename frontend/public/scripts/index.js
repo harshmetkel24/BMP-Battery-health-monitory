@@ -8,31 +8,6 @@ function getRandomADC(min, max) {
   return (Math.random() * (max - min) + min).toFixed(2);
 }
 
-function getValueFromRotation(gauge) {
-  const minRotation = -120; // Needle's starting rotation for minimum value
-  const maxRotation = 120; // Needle's rotation for maximum value
-  const currentValue =
-    ((gauge._currentRotation - minRotation) / (maxRotation - minRotation)) *
-      (gauge._max - gauge._min) +
-    gauge._min;
-
-  return currentValue;
-}
-
-function getMappedValue(value) {
-  const inMin = 0.9;
-  const inMax = 1.2;
-  const outMin = 0;
-  const outMax = 100;
-
-  // ensure value is in range
-  value = Math.min(Math.max(value, inMin), inMax);
-
-  const mappedValue = ((value - inMin) * (outMax - outMin)) / (inMax - inMin);
-
-  return mappedValue;
-}
-
 function updateGauge() {
   // const adc = GetADC();
   const adc = getRandomADC(9, 13);

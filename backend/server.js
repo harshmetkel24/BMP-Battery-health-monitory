@@ -4,6 +4,11 @@ const app = express();
 
 const path = require("path");
 
+const corsOptions = {
+  origin: "http://localhost:3000",
+  optionsSuccessStatus: 200,
+};
+
 app.use(cors());
 
 app.use(express.urlencoded({ extended: false }));

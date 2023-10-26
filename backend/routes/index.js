@@ -6,16 +6,16 @@ const {
   MonitorController,
   PostBatteries,
   GetBatteries,
-  SaveDataToFile
+  SaveDataToFiles,
 } = require("../controllers/index.js");
 
 router.get("/", HomeController);
 router.post("/", PostBatteries);
 
-router.get('/batteries', GetBatteries)
+router.get("/batteries", GetBatteries);
 
 router.get("/monitor", MonitorController);
 
-router.post("/save", SaveDataToFile);
+router.post("/save", SaveDataToFiles);
 
 module.exports = router;

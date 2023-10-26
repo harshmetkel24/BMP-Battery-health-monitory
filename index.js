@@ -8,17 +8,6 @@ function getRandomADC(min, max) {
   return (Math.random() * (max - min) + min).toFixed(2);
 }
 
-function getValueFromRotation(gauge) {
-  const minRotation = -120; // Needle's starting rotation for minimum value
-  const maxRotation = 120; // Needle's rotation for maximum value
-  const currentValue =
-    ((gauge._currentRotation - minRotation) / (maxRotation - minRotation)) *
-      (gauge._max - gauge._min) +
-    gauge._min;
-
-  return currentValue;
-}
-
 function updateGauge() {
   // const adc = GetADC();
   const adc = getRandomADC(9, 13);
@@ -68,25 +57,28 @@ updateGauge();
 // drawGoogleChart();
 // drawChart();
 
-// auto reset after every 5 minutes
-setInterval(() => {
-  saveDataToFile();
-  reset();
-}, 30 * 60 * 1000);
-
-// also save data when user closes the tab or refreshes the page
-window.addEventListener("beforeunload", function (e) {
-  saveDataToFile();
-});
-
 // timer should be updated every 1 second
 setInterval(function () {
   updateTimer();
 }, 1000);
 
+// update gauge in every 30 sec
 setInterval(function () {
   updateGauge();
+}, 30 * 1000);
+// }, 5000);
+
+// auto reset after every 5 minutes
+setInterval(() => {
+  saveDataToFile();
+  reset();
 }, 5 * 60 * 1000);
+// }, 10000);
+
+// also save data when user closes the tab or refreshes the page
+window.addEventListener("beforeunload", function (e) {
+  saveDataToFile();
+});
 
 function GetADC() {
   var xhttp = new XMLHttpRequest();
@@ -112,15 +104,23 @@ function createGauge(opts) {
   gauges.push(g);
 }
 
-createGauge({ clazz: "simple", label: "Battery Voltage" });
+createGauge({
+  clazz: "simple",
+  label: "Battery Voltage",
+  staticLabels: {
+    font: "10px sans-serif", // Specifies font
+    labels: [9, 10, 11, 12, 13], // Print labels at these values
+    color: "#000000", // Optional: Label text color
+    fractionDigits: 0, // Optional: Numerical precision. 0=round off.
+  },
+});
 
 // downloading a csv file
 
 function downloadCSV() {
   const filename = "ADC_Dataset.csv";
 
-  const storedData = JSON.parse(localStorage.getItem("adc_data")) || [];
-  const csvContent = storedData
+  const csvContent = adcTime
     .map((item) => {
       const row = item.join(",");
       return row;
@@ -149,7 +149,7 @@ function saveDataToFile() {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
     },
-    body: JSON.stringify(adcTime),
+    body: JSON.stringify({ adcTime, fileId: 1 }),
   })
     .then((response) => {
       if (response.ok) {
@@ -159,7 +159,7 @@ function saveDataToFile() {
       }
     })
     .catch((err) => {
-      console.log("Data could not be saved, please refresh page");
+      console.log("Data could not be saved, please refresh page", err);
     });
 }
 

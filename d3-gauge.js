@@ -336,6 +336,8 @@
             size: 250,
             min: 9,
             max: 13,
+            showTicks: true,
+            showTickText: true,
             transitionDuration: 500,
             label: "label.text",
             minorTicks: 50,

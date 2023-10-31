@@ -340,7 +340,7 @@
             showTickText: true,
             transitionDuration: 500,
             label: "label.text",
-            minorTicks: 50,
+            minorTicks: 10,
             majorTicks: 5,
             needleWidthRatio: 0.6,
             needleContainerRadiusRatio: 0.7,
@@ -349,6 +349,12 @@
               { clazz: "red-zone", from: 0, to: 0.3 },
               { clazz: "green-zone", from: 0.7, to: 1 },
             ],
+            staticLabels: {
+              font: "10px sans-serif", // Specifies font
+              labels: [9, 10, 11, 12, 13], // Print labels at these values
+              color: "#000000", // Optional: Label text color
+              fractionDigits: 2, // Optional: Numerical precision. 0=round off.
+            },
           };
         },
         {},

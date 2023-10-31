@@ -34,3 +34,11 @@ canvas {
   height: 300px;
   width: 100%;
 }
+
+
+/* dark theme */
+
+body.dark-theme {
+  background-color: #333 !important;
+  color: #fff;
+}

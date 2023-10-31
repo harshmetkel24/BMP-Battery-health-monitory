@@ -35,12 +35,12 @@ const SaveDataToFiles = (req, res) => {
   console.log("heelllooo", adcTime, fileId);
   const csvData = adcTime.map((row) => row.join(",")).join("\n");
 
-  fs.appendFile(`ADC_DATASET_${fileId}.csv`, csvData, "utf8", (error) => {
+  fs.appendFile(`DATASET_${fileId}.csv`, csvData, "utf8", (error) => {
     if (error) {
       console.error("Error appending data to CSV file:", error);
       res.sendStatus(500); // Respond with an error status
     } else {
-      console.log(`Data appended to ADC_DATASET_${fileId}.csv`);
+      console.log(`Data appended to DATASET_${fileId}.csv`);
       res.sendStatus(200); // Respond with a success status
     }
   });

@@ -1,11 +1,10 @@
 body {
-  background-image: url("../images/backgroundimg.jpg");
+  /* background-image: url("../images/backgroundimg.jpg"); */
+  background-image: url("../images/backgroundimg2.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-color: rgba(255, 255, 255, 0);
   height: 100vh;
-  transition: background-color 1s ease-in-out;
 }
 
 .container-fluid {
@@ -20,8 +19,6 @@ label {
 }
 
 input {
-  background-color: #333 !important;
-  color: #fff !important;
   border: 2px solid black !important;
   box-shadow: 0 0 4px #000 !important;  
 }

@@ -1,11 +1,10 @@
 body {
-  background-image: url("../images/backgroundimg.jpg");
+  /* background-image: url("../images/backgroundimg.jpg"); */
+  background-image: url("../images/backgroundimg2.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-color: rgba(255, 255, 255, 0);
   height: 100vh;
-  transition: background-color 1s ease-in-out;
 }
 
 .container-fluid {
@@ -16,7 +15,9 @@ body {
 
 .grid-container {
   min-height: 80vh;
-  max-height: 100vh;
+  background-color: #fff;
+  border-radius: 4px;
+  padding-top: 8px;
 }
 
 .webpage-container {
@@ -47,7 +48,7 @@ body {
 
 .toggle-button {
   position: absolute;
-  bottom: 2em;
-  right: 1.5em;
+  bottom: 1em;
+  right: 1em;
   z-index: 999;
 }

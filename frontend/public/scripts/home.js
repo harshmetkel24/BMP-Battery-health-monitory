@@ -23,9 +23,9 @@ document.addEventListener("DOMContentLoaded", function () {
           placeholder="Enter Battery link"
           name="battery${inputCount}"
         />
-        <span class="input-group-text text-danger" id="basic-addon2">
+        <button class="input-group-text text-danger btn" id="basic-addon2" data-bs-toggle="tooltip" title="Delete this battery url">
           <i class="fa-solid fa-trash remove-input"></i>
-        </span>
+        </button>
       </div>
     `;
     return newInput;

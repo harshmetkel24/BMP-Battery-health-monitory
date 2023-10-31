@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Battery Health Monitor</title>
     <link rel="stylesheet" href="./styles/home.css" />
-    
   </head>
 
-  <body>
+  <body class="light-theme" > 
     <div class="container-fluid min-vh-100">
-      <%- include("./partials/navbar.ejs", {heading: "Battery Health Monitor | Add Betteries"}) %>
+      <%- include("./partials/navbar.ejs", {heading: "Battery Health Monitor | Add Batteries"}) %>
 
-      <div class="container w-50 bg-light border shadow-lg rounded-3 mt-5">
+      <div class="container bg-dark w-50 bg-light border shadow-lg rounded-3 mt-5">
         <form action="/" method="post" class="px-5 py-3">
           <div class="form-group mb-3 input-group dynamic-input">
             <!-- Initial input field -->
@@ -25,10 +24,17 @@
                 class="form-control"
                 placeholder="Enter Battery link"
                 name="battery1"
+                required
               />
-              <span class="input-group-text text-secondary" id="basic-addon2">
+              <button
+                class="input-group-text text-secondary btn"
+                data-bs-toggle="tooltip"
+                title="Delete this battery url"
+                disabled
+                id="basic-addon2"
+              >
                 <i class="fa-solid fa-trash remove-input"></i>
-              </span>
+              </button>
             </div>
           </div>
 
@@ -50,4 +56,5 @@
   </body>
 
   <script src="./scripts/home.js"></script>
+  <script src="./scripts/index.js"></script>
 </html>

@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Battery Monitor</title>
     <link rel="stylesheet" href="./styles/batteries.css" />
+    <link rel="stylesheet" href="./styles/index.css">
   </head>
-  <body>
+  <body class="light-theme" >
     <div class="container-fluid min-vh-100">
       <%- include('./partials/navbar', { heading : "Battery Health Monitor | All Batteies"}) %>
       <div class="container">
-        <div class="row grid-container">
-          <div class="text-light"><%= batteries.length %></div>
+        <div class="row grid-container pt-2">
 
           <% if (batteries.length == 0) { %>
 
@@ -24,7 +24,7 @@
           >
             <iframe src="<%= batteries[0].url %>"></iframe>
             <div
-              class="toggle-button btn-sm btn-outline-light"
+              class="toggle-button btn-sm btn-outline-dark"
               onclick="toggleFullScreen(this.parentElement, this)"
             >
                <i class="fa-solid fa-expand"></i>
@@ -38,7 +38,7 @@
                 >
                   <iframe src="<%= batteries[`${i}`].url %>"></iframe>
                   <div
-                    class="toggle-button btn-sm btn-outline-light"
+                    class="toggle-button btn-sm btn-outline-dark"
                     onclick="toggleFullScreen(this.parentElement, this)"
                   >
                      <i class="fa-solid fa-expand"></i>
@@ -54,7 +54,7 @@
                     >
                       <iframe src="<%= batteries[`${i}`].url %>"></iframe>
                       <div
-                        class="toggle-button btn btn-primary"
+                        class="toggle-button btn btn-outline-dark"
                         onclick="toggleFullScreen(this.parentElement, this)"
                       >
                         <i class="fa-solid fa-expand"></i>
@@ -89,5 +89,6 @@
       }
     </script>
     <script src="./scripts/home.js"></script>
+    <script src="./scripts/index.js"></script>
   </body>
 </html>

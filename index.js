@@ -3,14 +3,17 @@ let adcTime = [];
 let adcTimeToShow = [];
 let timeCurrentVoltage = [];
 let reportData = ``;
+const fileId = "coal mine";
+
+document.querySelector(".h1.bg-dark").innerHTML += `<span class="text-primary">${fileId}</span>`
 
 function getRandomADC(min, max) {
   return (Math.random() * (max - min) + min).toFixed(2);
 }
 
 function updateGauge() {
-  // const adc = GetADC();
-  const adc = getRandomADC(9, 13);
+  const adc = GetADC();
+  // const adc = getRandomADC(9, 13);
   const now = new Date();
   const formattedDate = `${(now.getMonth() + 1)
     .toString()
@@ -71,7 +74,7 @@ setInterval(function () {
 // auto reset after every 5 minutes
 setInterval(() => {
   saveDataToFile();
-  reset();
+  // reset();
 }, 10 * 60 * 1000);
 // }, 10000);
 
@@ -99,7 +102,6 @@ function GetADC() {
 function createGauge(opts) {
   var el = document.querySelector(".gauge-container");
   var g = d3Gauge(el, opts);
-  // console.log(g);
   g.currentValue = g._range / 2;
   gauges.push(g);
 }
@@ -107,18 +109,22 @@ function createGauge(opts) {
 createGauge({
   clazz: "simple",
   label: "Battery Voltage",
+  fractionDigits: 2,
+  textField: {
+    fractionDigits: 2,
+  },
   staticLabels: {
     font: "10px sans-serif", // Specifies font
     labels: [9, 10, 11, 12, 13], // Print labels at these values
     color: "#000000", // Optional: Label text color
-    fractionDigits: 0, // Optional: Numerical precision. 0=round off.
+    fractionDigits: 2, // Optional: Numerical precision. 0=round off.
   },
 });
 
 // downloading a csv file
 
 function downloadCSV() {
-  const filename = "ADC_Dataset.csv";
+  const filename = `DATASET_${fileId}_download.csv`;
 
   const csvContent = adcTime
     .map((item) => {
@@ -127,7 +133,6 @@ function downloadCSV() {
     })
     .join("\n");
 
-  console.log(csvContent);
 
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
 
@@ -149,7 +154,7 @@ function saveDataToFile() {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
     },
-    body: JSON.stringify({ adcTime, fileId: 1 }),
+    body: JSON.stringify({ adcTime, fileId }),
   })
     .then((response) => {
       if (response.ok) {

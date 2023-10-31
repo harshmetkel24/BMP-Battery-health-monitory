@@ -59,7 +59,7 @@
 }
 
 .d3-gauge.simple .green-zone {
-  fill: greenyellow;
+  fill: #006400;
 }
 
 .d3-gauge.simple .yellow-zone {
@@ -85,7 +85,7 @@
 }
 
 .d3-gauge.grayscale .label {
-  fill: #ff9102;
+  fill: cyan;
   font-size: 24px;
 }
 

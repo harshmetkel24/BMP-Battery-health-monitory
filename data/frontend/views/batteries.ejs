@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Battery Monitor</title>
+    <link rel="stylesheet" href="./styles/batteries.css" />
+    <link rel="stylesheet" href="./styles/index.css">
+  </head>
+  <body class="light-theme" >
+    <div class="container-fluid min-vh-100">
+      <%- include('./partials/navbar', { heading : "Battery Health Monitor | All Batteies"}) %>
+      <div class="container">
+        <div class="row grid-container pt-2">
+
+          <% if (batteries.length == 0) { %>
+
+          <div class="col-12">
+            <p class="alert alert-danger">No batteries Provided</p>
+          </div>
+          <% } else if(batteries.length == 1) { %>
+          <div
+            class="col-12 webpage-container border border-3 border-dark rounded-3 shadow"
+          >
+            <iframe src="<%= batteries[0].url %>"></iframe>
+            <div
+              class="toggle-button btn-sm btn-outline-dark"
+              onclick="toggleFullScreen(this.parentElement, this)"
+            >
+               <i class="fa-solid fa-expand"></i>
+            </div>
+          </div>
+          <% } else { %> 
+            <% for(let i = 0; i < Math.min(4, batteries.length); i++) { %>
+              <div class="col-md-6 col-12 mb-3">
+                <div
+                  class="webpage-container border border-3 border-dark rounded-3 shadow"
+                >
+                  <iframe src="<%= batteries[`${i}`].url %>"></iframe>
+                  <div
+                    class="toggle-button btn-sm btn-outline-dark"
+                    onclick="toggleFullScreen(this.parentElement, this)"
+                  >
+                     <i class="fa-solid fa-expand"></i>
+                  </div>
+                </div>
+              </div>
+            <% } %> 
+
+            <% for(let i = 4; i < batteries.length; i++) { %>
+                <div class="col-12 col-md-4 col-lg-3 mb-3">
+                   <div
+                    class="webpage-container border border-3 border-dark rounded-3 shadow"
+                    >
+                      <iframe src="<%= batteries[`${i}`].url %>"></iframe>
+                      <div
+                        class="toggle-button btn btn-outline-dark"
+                        onclick="toggleFullScreen(this.parentElement, this)"
+                      >
+                        <i class="fa-solid fa-expand"></i>
+                      </div>
+                  </div>
+                </div>
+            <% } %>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const batteries = <%- JSON.stringify(batteries) %>;
+
+
+        console.log(batteries)
+      // Function to toggle full-screen mode
+      function toggleFullScreen(element, btn) {
+        console.log(btn.innerHTML )
+        if (element.classList.contains("full-screen")) {
+          btn.innerHTML  = `<i class="fa-solid fa-expand"></i>`;
+          element.children[1].style.zIndex--;
+          element.classList.remove("full-screen");
+        } else {
+          btn.innerHTML = `<i class="fa-solid fa-compress"></i>`;
+          element.children[1].style.zIndex++;
+          element.classList.add("full-screen");
+        }
+      }
+    </script>
+    <script src="./scripts/home.js"></script>
+    <script src="./scripts/index.js"></script>
+  </body>
+</html>

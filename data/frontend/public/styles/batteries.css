@@ -1,0 +1,54 @@
+body {
+  /* background-image: url("../images/backgroundimg.jpg"); */
+  background-image: url("../images/backgroundimg2.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+}
+
+.container-fluid {
+  display: none;
+  height: 100vh;
+  overflow: auto;
+}
+
+.grid-container {
+  min-height: 80vh;
+  background-color: #fff;
+  border-radius: 4px;
+  padding-top: 8px;
+}
+
+.webpage-container {
+  width: 100%;
+  min-height: 360px;
+  height: 100%;
+  border: 1px solid #ccc;
+  overflow: hidden;
+  position: relative;
+}
+
+.webpage-container iframe,
+.webpage-container p {
+  width: 100%;
+  min-height: 320px;
+  height: 100%;
+  border: none;
+}
+
+.full-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+}
+
+.toggle-button {
+  position: absolute;
+  bottom: 1em;
+  right: 1em;
+  z-index: 999;
+}

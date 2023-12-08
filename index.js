@@ -5,15 +5,17 @@ let timeCurrentVoltage = [];
 let reportData = ``;
 const fileId = "coal mine";
 
-document.querySelector(".h1.bg-dark").innerHTML += `<span class="text-primary">${fileId}</span>`
+document.querySelector(
+  ".h1.bg-dark"
+).innerHTML += `<span class="text-primary">${fileId}</span>`;
 
 function getRandomADC(min, max) {
   return (Math.random() * (max - min) + min).toFixed(2);
 }
 
 function updateGauge() {
-  const adc = GetADC();
-  // const adc = getRandomADC(9, 13);
+  // const adc = GetADC();
+  const adc = getRandomADC(9, 13);
   const now = new Date();
   const formattedDate = `${(now.getMonth() + 1)
     .toString()
@@ -25,8 +27,8 @@ function updateGauge() {
 
   // google.charts.load("current", { packages: ["corechart", "line"] });
   // google.charts.setOnLoadCallback(drawGoogleChart);
-  adcTime.push([time, adc, formattedDate]);
-  adcTimeToShow.push([time, adc, formattedDate]);
+  adcTime.push([time, formattedDate, adc]);
+  adcTimeToShow.push([time, formattedDate, adc]);
   gauges.forEach(function (gauge) {
     gauge.write(adc);
   });
@@ -51,9 +53,11 @@ function updateTimer() {
   return time;
 }
 
-function reset() {
+async function reset() {
   saveDataToFile();
-  window.location.reload();
+  setTimeout(() => {
+    window.location.reload();
+  }, 2 * 1000);
 }
 
 updateGauge();
@@ -68,13 +72,13 @@ setInterval(function () {
 // update gauge in every 30 sec
 setInterval(function () {
   updateGauge();
+  // saveDataToFile();
 }, 60 * 1000);
 // }, 5000);
 
 // auto reset after every 5 minutes
 setInterval(() => {
-  saveDataToFile();
-  // reset();
+  reset();
 }, 10 * 60 * 1000);
 // }, 10000);
 
@@ -133,7 +137,6 @@ function downloadCSV() {
     })
     .join("\n");
 
-
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
 
   const link = document.querySelector(".download-btn");
@@ -147,7 +150,7 @@ function downloadCSV() {
   });
 }
 
-function saveDataToFile() {
+async function saveDataToFile() {
   // make a post request to save data to file
   fetch("http://localhost:3000/save", {
     method: "POST",
@@ -157,6 +160,7 @@ function saveDataToFile() {
     body: JSON.stringify({ adcTime, fileId }),
   })
     .then((response) => {
+      console.log(response);
       if (response.ok) {
         console.log("Data saved successfully");
       } else {
@@ -167,6 +171,40 @@ function saveDataToFile() {
       console.log("Data could not be saved, please refresh page", err);
     });
 }
+
+// Hnadling predictions
+
+const predictionForm = document.querySelector("#prediction-form");
+
+predictionForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  console.log(predictionForm);
+  const predictTime = document.querySelector("#predict-time").value;
+  const predictDate = document.querySelector("#predict-date").value;
+  console.log(predictDate, predictTime);
+  const response = await fetch(
+    `http://127.0.0.1:5000/predict?time=${predictTime}&date=${predictDate}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    }
+  );
+  const prediction = await response.json();
+
+  if (prediction.error) {
+    alert(prediction.error);
+  } else {
+    document.querySelector(
+      ".prediction-response"
+    ).innerHTML = `<h3>Predicted Voltage: ${prediction.prediction.toFixed(
+      2
+    )}</h3>`;
+  }
+  console.log(prediction);
+});
 
 // commented code may be required in future
 

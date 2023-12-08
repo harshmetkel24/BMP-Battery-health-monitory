@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Chela+One&display=swap");
-
 * {
   margin: 0;
   padding: 0;
@@ -12,15 +10,12 @@
 
 /* Hide scrollbar for IE, Edge and Firefox */
 * {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
-.h1 {
-  font-family: "Chela One", cursive;
-}
-
-table tbody td, table thead tr {
+table tbody td,
+table thead tr {
   text-align: center;
 }
 
@@ -34,7 +29,6 @@ canvas {
   height: 300px;
   width: 100%;
 }
-
 
 /* dark theme */
 

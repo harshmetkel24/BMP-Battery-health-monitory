@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
         />
         <button class="input-group-text text-danger btn" id="basic-addon2" data-bs-toggle="tooltip" title="Delete this battery url">
           <i class="fa-solid fa-trash remove-input"></i>
-        </button>
+      </button>p
       </div>
     `;
     return newInput;

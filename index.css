@@ -1,0 +1,38 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+* {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+table tbody td,
+table thead tr {
+  text-align: center;
+}
+
+.line-chart {
+  width: 100%;
+  height: 300px;
+  margin-bottom: 2em;
+}
+
+canvas {
+  height: 300px;
+  width: 100%;
+}
+
+/* dark theme */
+
+body.dark-theme {
+  background-color: #333 !important;
+  color: #fff;
+}
